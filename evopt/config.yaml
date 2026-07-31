@@ -1,6 +1,6 @@
 ---
 name: evopt
-version: "2026.7.31"
+version: "4a1509625814a3bce3e98c8dea6f7193b9b4e334"
 slug: evopt
 description: Optimierer für Ladevorgänge (evopt) als Home Assistant Add-on
 url: https://github.com/evcc-io/optimizer
@@ -14,6 +14,7 @@ legacy: true
 stage: experimental
 init: false
 watchdog: http://[HOST]:[PORT:7050]/optimize/health
+image: evcc/optimizer
 show_in_sidebar: false
 ports:
   7050/tcp: 7050
