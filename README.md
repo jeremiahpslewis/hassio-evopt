@@ -15,7 +15,7 @@ Die Kombination mit [evcc.io/evcc](https://github.com/evcc-io/evcc) ermöglicht 
 ## Features
 
 - Integration in Home Assistant als eigenständiges Addon
-- Verwendet das offizielle [evcc/optimizer](https://hub.docker.com/r/evcc/optimizer)-Docker-Image des evcc-Projekts
+- Vorgebaute Images: Bei neuen Commits im [evcc-io/optimizer](https://github.com/evcc-io/optimizer)-Repository wird das Image automatisch per GitHub Actions gebaut und in der GitHub Container Registry veröffentlicht
 - Optimierung der Ladezeiten und -mengen für Elektrofahrzeuge
 - Nutzung von Daten und Steuerfunktionen von evcc
 - Automatische Anpassung an variable Stromtarife und Energieflüsse
