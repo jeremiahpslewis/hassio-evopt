@@ -8,11 +8,11 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/* \
     && pip install --no-cache-dir uv
 
-# Fetch the pinned evopt commit from GitHub
+# Fetch the pinned evopt optimizer commit from GitHub
 ARG EVOPT_COMMIT=main
 WORKDIR /app
 RUN git init -q . \
-    && git remote add origin https://github.com/andig/evopt.git \
+    && git remote add origin https://github.com/evcc-io/optimizer.git \
     && git fetch -q --depth 1 origin "$EVOPT_COMMIT" \
     && git checkout -q FETCH_HEAD
 

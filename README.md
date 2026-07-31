@@ -1,6 +1,6 @@
 # EVOpt Home Assistant Addon
 
-Dieses Home Assistant Addon bietet eine bequeme Möglichkeit, die [EVOpt](https://github.com/andig/evopt)-Lösung lokal als Addon in Home Assistant zu betreiben. EVOpt ist eine Optimierungslösung für das Laden von Elektrofahrzeugen, die in Kombination mit [evcc.io/evcc](https://github.com/evcc-io/evcc) verwendet werden kann.
+Dieses Home Assistant Addon bietet eine bequeme Möglichkeit, die [EVOpt](https://github.com/evcc-io/optimizer)-Lösung lokal als Addon in Home Assistant zu betreiben. EVOpt ist eine Optimierungslösung für das Laden von Elektrofahrzeugen, die in Kombination mit [evcc.io/evcc](https://github.com/evcc-io/evcc) verwendet werden kann.
 
 ---
 
@@ -15,7 +15,7 @@ Die Kombination mit [evcc.io/evcc](https://github.com/evcc-io/evcc) ermöglicht 
 ## Features
 
 - Integration in Home Assistant als eigenständiges Addon
-- Wird bei Installation und Updates direkt aus dem GitHub-Quellcode ([andig/evopt](https://github.com/andig/evopt)) gebaut
+- Wird bei Installation und Updates direkt aus dem GitHub-Quellcode ([evcc-io/optimizer](https://github.com/evcc-io/optimizer)) gebaut
 - Optimierung der Ladezeiten und -mengen für Elektrofahrzeuge
 - Nutzung von Daten und Steuerfunktionen von evcc
 - Automatische Anpassung an variable Stromtarife und Energieflüsse
@@ -54,7 +54,7 @@ tariffs:
 ```
 
 Für eine vollständige Beschreibung der Parameter und deren Bedeutung empfiehlt sich die Lektüre der evcc-Dokumentation unter:  
-[https://github.com/evopt/evopt](https://github.com/andig/evopt)
+[https://github.com/evcc-io/optimizer](https://github.com/evcc-io/optimizer)
 
 ---
 
@@ -65,7 +65,7 @@ Nach der Konfiguration und dem Start des Addons kommuniziert EVOpt mit evcc, um 
 ---
 
 ## Links
-- evopt Repository: [https://github.com/andig/evopt](https://github.com/andig/evopt)
+- evopt Repository: [https://github.com/evcc-io/optimizer](https://github.com/evcc-io/optimizer)
 - EVOpt Repository: [https://github.com/thecem/hassio-evopt](https://github.com/thecem/hassio-evopt)
 - evcc Repository: [https://github.com/evcc-io/evcc](https://github.com/evcc-io/evcc)
 

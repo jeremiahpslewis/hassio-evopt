@@ -16,10 +16,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v6
 
-      - name: Get latest commit on andig/evopt main
+      - name: Get latest commit on evcc-io/optimizer main
         id: upstream
         run: |
-          sha=$(git ls-remote https://github.com/andig/evopt.git refs/heads/main | cut -f1)
+          sha=$(git ls-remote https://github.com/evcc-io/optimizer.git refs/heads/main | cut -f1)
           if [ -z "$sha" ]; then
             echo "Failed to resolve upstream main" >&2
             exit 1

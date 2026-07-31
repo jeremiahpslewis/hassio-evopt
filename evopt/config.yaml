@@ -3,7 +3,7 @@ name: evopt
 version: "2026.7.31"
 slug: evopt
 description: Optimierer für Ladevorgänge (evopt) als Home Assistant Add-on
-url: https://github.com/andig/evopt
+url: https://github.com/evcc-io/optimizer
 panel_icon: mdi:flask-outline
 arch: 
   - amd64
