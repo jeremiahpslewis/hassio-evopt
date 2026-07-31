@@ -1,0 +1,65 @@
+name: Update evopt version
+
+permissions:
+  contents: write
+
+on:
+  schedule:
+    - cron: '0 * * * *'  # stündlich, Minute 0 (UTC)
+  workflow_dispatch:
+
+jobs:
+  update-evopt:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Get latest commit on andig/evopt main
+        id: upstream
+        run: |
+          sha=$(git ls-remote https://github.com/andig/evopt.git refs/heads/main | cut -f1)
+          if [ -z "$sha" ]; then
+            echo "Failed to resolve upstream main" >&2
+            exit 1
+          fi
+          echo "Latest upstream commit: $sha"
+          echo "sha=$sha" >> $GITHUB_OUTPUT
+
+      - name: Get pinned commit from build.yaml
+        id: pinned
+        run: |
+          pinned=$(grep -oP 'EVOPT_COMMIT:\s*"\K[0-9a-f]+' evopt/build.yaml)
+          echo "Pinned commit: $pinned"
+          echo "sha=$pinned" >> $GITHUB_OUTPUT
+
+      - name: Update pinned commit and add-on version
+        id: update
+        run: |
+          if [ "${{ steps.upstream.outputs.sha }}" = "${{ steps.pinned.outputs.sha }}" ]; then
+            echo "Already up to date"
+            echo "updated=false" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+          sed -i "s/^\(\s*EVOPT_COMMIT:\).*/\1 \"${{ steps.upstream.outputs.sha }}\"/" evopt/build.yaml
+          current=$(grep -oP '^version:\s*"\K[^"]+' evopt/config.yaml)
+          today=$(date -u +%Y.%-m.%-d)
+          if [ "$current" = "$today" ]; then
+            new="$today.1"
+          elif [[ "$current" == "$today".* ]]; then
+            new="$today.$(( ${current##*.} + 1 ))"
+          else
+            new="$today"
+          fi
+          sed -i "s/^version:.*/version: \"$new\"/" evopt/config.yaml
+          echo "Updated to version $new (evopt commit ${{ steps.upstream.outputs.sha }})"
+          echo "updated=true" >> $GITHUB_OUTPUT
+          echo "version=$new" >> $GITHUB_OUTPUT
+
+      - name: Commit and push changes if updated
+        if: steps.update.outputs.updated == 'true'
+        uses: stefanzweifel/git-auto-commit-action@v7
+        with:
+          commit_message: Update evopt to ${{ steps.upstream.outputs.sha }} (${{ steps.update.outputs.version }})
+          branch: main

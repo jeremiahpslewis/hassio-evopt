@@ -1,6 +1,6 @@
 ---
 name: evopt
-version: "0.1.32"
+version: "2026.7.31"
 slug: evopt
 description: Optimierer für Ladevorgänge (evopt) als Home Assistant Add-on
 url: https://github.com/andig/evopt
@@ -14,7 +14,6 @@ legacy: true
 stage: experimental
 init: false
 watchdog: http://[HOST]:[PORT:7050]/optimize/health
-image: litithio/evopt
 show_in_sidebar: false
 ports:
   7050/tcp: 7050

@@ -15,6 +15,7 @@ Die Kombination mit [evcc.io/evcc](https://github.com/evcc-io/evcc) ermöglicht 
 ## Features
 
 - Integration in Home Assistant als eigenständiges Addon
+- Wird bei Installation und Updates direkt aus dem GitHub-Quellcode ([andig/evopt](https://github.com/andig/evopt)) gebaut
 - Optimierung der Ladezeiten und -mengen für Elektrofahrzeuge
 - Nutzung von Daten und Steuerfunktionen von evcc
 - Automatische Anpassung an variable Stromtarife und Energieflüsse
