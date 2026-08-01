@@ -1,4 +1,4 @@
-ARG BUILD_FROM=python:3.13-slim
+ARG BUILD_FROM=python:3.13-slim@sha256:6771159cd4fa5d9bba1258caf0b82e6b73458c694d178ad97c5e925c2d0e1a91
 
 # Build stage: fetch the evcc optimizer from GitHub and install its dependencies
 FROM $BUILD_FROM AS builder
@@ -48,6 +48,8 @@ ENV OPTIMIZER_TIME_LIMIT=10
 ENV OPTIMIZER_NUM_THREADS=1
 # the access log is the only source of per request latency, keep the format lean.
 # the config module reaps solvers left behind by a killed worker, see gunicorn_conf.py
-ENV GUNICORN_CMD_ARGS="--workers 4 --max-requests 32 --config python:optimizer.gunicorn_conf --access-logfile - --access-logformat '%(m)s %(U)s %(s)s %(D)s'"
+# two workers keep memory use modest on small Home Assistant hardware while
+# still allowing one optimization to run during a health check
+ENV GUNICORN_CMD_ARGS="--workers 2 --max-requests 32 --config python:optimizer.gunicorn_conf --access-logfile - --access-logformat '%(m)s %(U)s %(s)s %(D)s'"
 USER app
 CMD ["/app/.venv/bin/gunicorn", "--bind", "0.0.0.0:7050", "optimizer.app:app"]

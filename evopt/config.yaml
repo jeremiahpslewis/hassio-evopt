@@ -1,13 +1,13 @@
 ---
 name: evopt
-version: "2026.7.31"
+version: "2026.8.1"
 slug: evopt
 description: Optimierer für Ladevorgänge (evopt) als Home Assistant Add-on
-url: https://github.com/evcc-io/optimizer
+url: https://github.com/jeremiahpslewis/hassio-evopt
 panel_icon: mdi:flask-outline
-arch: 
+arch:
   - amd64
-  - aarch64 
+  - aarch64
 startup: application
 boot: auto
 legacy: true
@@ -20,10 +20,5 @@ ports:
   7050/tcp: 7050
 ports_description:
   7050/tcp: "evopt HTTP API"
-map:
-  - type: addon_config
-    read_only: false
-  - type: homeassistant_config
-    read_only: false
 ingress: false
-host_network: true
+host_network: false

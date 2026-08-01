@@ -1,0 +1,13 @@
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: weekly
+
+  # bumps the base-image digest in evopt/Dockerfile; mirror the new digest
+  # into evopt/build.yaml when merging
+  - package-ecosystem: docker
+    directory: "/evopt"
+    schedule:
+      interval: weekly

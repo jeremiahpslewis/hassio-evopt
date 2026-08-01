@@ -28,50 +28,52 @@ Die Kombination mit [evcc.io/evcc](https://github.com/evcc-io/evcc) ermöglicht 
 
    Repository URL:
    ```
-   https://github.com/thecem/hassio-evopt
+   https://github.com/jeremiahpslewis/hassio-evopt
    ```
 
-2. Suche in der Addon-Liste nach "EVOpt" und installiere das Addon.
+2. Suche in der Addon-Liste nach "evopt" und installiere das Addon.
 
-3. Konfiguriere das Addon über das Home Assistant Addon Panel (siehe Konfiguration unten).
-
-4. Starte das Addon.
+3. Starte das Addon. Eine weitere Konfiguration ist nicht erforderlich.
 
 ---
 
 ## Konfiguration
 
-Die Konfiguration erfolgt über die `config`-Sektion des Addons, z.B. in der `options`:
+Das Addon stellt keine Optionen im Home Assistant Addon-Panel bereit — der Container startet direkt den evopt-HTTP-Dienst mit sinnvollen Voreinstellungen.
 
-```
-# Beispiel-Konfiguration (anpassen nach Bedarf)
-evcc_api_url: "http://localhost:7070/api"  # URL zur evcc API
-charging_mode: "optimiert"                 # Beispiel-Parameter
-max_current: 16                            # Maximale Stromstärke in Ampere
-tariffs:
-  - "tag"
-  - "nacht"
-```
+- **API-Endpunkt:** `http://<home-assistant-host>:7050`
+- **Health-Check:** `http://<home-assistant-host>:7050/optimize/health` (wird auch als Watchdog des Addons verwendet)
 
-Für eine vollständige Beschreibung der Parameter und deren Bedeutung empfiehlt sich die Lektüre der evcc-Dokumentation unter:  
-[https://github.com/evcc-io/optimizer](https://github.com/evcc-io/optimizer)
+Fest eingestellte Laufzeitparameter des Images:
+
+| Parameter | Wert | Bedeutung |
+|---|---|---|
+| `OPTIMIZER_TIME_LIMIT` | `10` | Zeitlimit (Sekunden) pro Optimierungslauf |
+| `OPTIMIZER_NUM_THREADS` | `1` | Solver-Threads pro Optimierungslauf |
+| Gunicorn-Worker | `2` | Anzahl paralleler Optimierungsprozesse |
+
+Diese Werte sind derzeit nicht über das Addon-Panel konfigurierbar.
+
+### Anbindung an evcc
+
+evcc muss so konfiguriert werden, dass es den evopt-Dienst unter `http://<home-assistant-host>:7050` erreicht. Details zur evcc-seitigen Konfiguration finden sich in der [evcc-Dokumentation](https://docs.evcc.io/) und im [evcc-io/optimizer](https://github.com/evcc-io/optimizer)-Repository.
 
 ---
 
 ## Verwendung
 
-Nach der Konfiguration und dem Start des Addons kommuniziert EVOpt mit evcc, um Ladeprofile für Elektrofahrzeuge optimal zu steuern. Die Steuerung erfolgt automatisch und passt sich an Deine individuellen Anforderungen und Stromtarife an.
+Nach dem Start des Addons kann evcc den evopt-Dienst zur Berechnung optimaler Ladeprofile für Elektrofahrzeuge nutzen. Die Steuerung erfolgt automatisch und passt sich an Deine individuellen Anforderungen und Stromtarife an.
 
 ---
 
 ## Links
 - evopt Repository: [https://github.com/evcc-io/optimizer](https://github.com/evcc-io/optimizer)
-- EVOpt Repository: [https://github.com/thecem/hassio-evopt](https://github.com/thecem/hassio-evopt)
+- Addon-Repository: [https://github.com/jeremiahpslewis/hassio-evopt](https://github.com/jeremiahpslewis/hassio-evopt)
 - evcc Repository: [https://github.com/evcc-io/evcc](https://github.com/evcc-io/evcc)
 
 ---
 
-## Disccussion
+## Diskussion
 
 https://github.com/evcc-io/evcc/discussions/
 
@@ -79,7 +81,7 @@ https://github.com/evcc-io/evcc/discussions/
 
 ## Support & Mitwirkung
 
-Für Support, Fragen oder Beiträge zum Projekt besuche bitte das Repository und öffne gegebenenfalls Issues oder Pull Requests.
+Für Support, Fragen oder Beiträge zum Addon öffne bitte Issues oder Pull Requests im Repository [jeremiahpslewis/hassio-evopt](https://github.com/jeremiahpslewis/hassio-evopt).
 
 ---
 
