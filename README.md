@@ -83,6 +83,47 @@ Für Support, Fragen oder Beiträge zum Projekt besuche bitte das Repository und
 
 ---
 
+## Fork mit dem Add-on-Upstream synchronisieren
+
+Unter **Actions → Sync add-on upstream → Run workflow** auf `main` wird
+`thecem/hassio-evopt:main` in den Branch `upstream/thecem-main` übernommen.
+Dieser Branch enthält den unveränderten Stand des Add-on-Upstreams.
+Der Workflow erstellt einen PR von `sync/addon-upstream` nach `main` oder
+aktualisiert den bereits offenen PR einschließlich neuer Änderungen aus `main`.
+Ist `main` bereits aktuell, wird kein PR erstellt.
+
+Den PR mit **Create a merge commit** zusammenführen, damit Git die bereits
+übernommenen Upstream-Commits bei der nächsten Synchronisierung erkennt.
+Squash oder Rebase würden diese Historie verlieren. GitHubs **Update branch**
+übernimmt nur Änderungen aus dem PR-Zielbranch; neue Commits aus dem externen
+Upstream werden über **Run workflow** geholt.
+
+Falls GitHub die automatische PR-Erstellung blockiert, unter **Settings →
+Actions → General → Workflow permissions** die Option **Allow GitHub Actions
+to create and approve pull requests** aktivieren. Alternativ kann der im
+Workflow-Ergebnis verlinkte PR manuell geöffnet werden. Der Workflow muss
+zuerst auf `main` zusammengeführt sein, bevor er dort manuell gestartet werden kann.
+
+Die Synchronisierung erhält die Anpassungen dieses Forks: GHCR-Images,
+Optimizer-Pin und `OPTIMIZER_SOLVER=highs`. Bei Konflikten bleibt der lokale
+Keepalive-Zeitstempel erhalten; der durch den GHCR-Build ersetzte
+Docker-Hub-Updater bleibt gelöscht. Andere Konflikte stoppen den Lauf, ohne
+den PR-Branch zu überschreiben. Der Workflow verwendet keine Force-Pushes.
+Ein geschlossener, nicht zusammengeführter Sync-PR muss vor einem erneuten
+Lauf wieder geöffnet oder sein Branch bewusst umbenannt werden.
+
+Dies synchronisiert nur den Add-on-Upstream `thecem/hassio-evopt`.
+Die vorhandene Aktualisierung von `evcc-io/optimizer` bleibt davon unabhängig.
+**Build optimizer image** prüft weiterhin stündlich sowie bei manuellem Start
+den aktuellen `main`-Commit von `evcc-io/optimizer`, baut beide Architekturen und
+aktualisiert anschließend den Pin und die Add-on-Version. Änderungen am Add-on
+auf `main` lösen ebenfalls einen Build mit einer neuen Version aus, auch wenn
+der Optimizer-Commit unverändert ist. **Validate optimizer
+image** baut den im PR gepinnten Stand für amd64 und arm64 und prüft API,
+HiGHS und CBC, bevor die Änderung zusammengeführt wird.
+
+---
+
 ## Lizenz
 
 Informationen zur Lizenz des Addons sind im Repository zu finden.

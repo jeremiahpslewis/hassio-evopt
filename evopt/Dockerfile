@@ -18,8 +18,8 @@ RUN git init -q . \
 
 RUN uv sync --locked --no-editable --no-group dev
 
-# pulp bundles CBC 2.10.10 for arm64 but 2.10.3 from 2019 for amd64, and resolves the solver by a
-# fixed path with no override, so fetch the static 2.10.10 build to link over the bundled amd64 binary
+# PuLP 4 resolves CBC from PATH instead of bundling it. Use upstream's
+# checksum-verified CBC 2.10.10 build on amd64 and Debian's CBC on arm64.
 RUN mkdir -p /out/bin \
     && if [ "$(dpkg --print-architecture)" = "amd64" ]; then \
         curl -fsSL -o /tmp/cbc.tar.gz "https://github.com/coin-or/Cbc/releases/download/releases%2F2.10.10/Cbc-releases.2.10.10-x86_64-ubuntu22-gcc1130-static.tar.gz" \
@@ -36,11 +36,13 @@ RUN groupadd -r app && useradd -r -g app -s /bin/false app
 COPY --from=builder --chown=app:app /app/.venv /app/.venv
 COPY --from=builder /out/ /usr/local/
 
-RUN if [ -x /usr/local/bin/cbc ]; then \
-        find /app/.venv -path '*/pulp/solverdir/cbc/*/cbc' -exec ln -sf /usr/local/bin/cbc {} \; ; \
+RUN if [ "$(dpkg --print-architecture)" != "amd64" ]; then \
+        apt-get update \
+        && apt-get install -y --no-install-recommends coinor-cbc \
+        && rm -rf /var/lib/apt/lists/*; \
     fi \
-    && echo | "$(/app/.venv/bin/python -c 'from pulp.apis.coin_api import pulp_cbc_path; print(pulp_cbc_path)')" \
-        | grep -q 'Version: 2.10.10'
+    && echo | "$(/app/.venv/bin/python -c 'import pulp; print(pulp.COIN_CMD().path)')" \
+        | grep -q 'Version: 2.10'
 
 # Run the application
 ENV PYTHONUNBUFFERED=1
