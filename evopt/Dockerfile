@@ -46,6 +46,7 @@ RUN if [ -x /usr/local/bin/cbc ]; then \
 ENV PYTHONUNBUFFERED=1
 ENV OPTIMIZER_TIME_LIMIT=10
 ENV OPTIMIZER_NUM_THREADS=1
+ENV OPTIMIZER_SOLVER=highs
 # the access log is the only source of per request latency, keep the format lean.
 # the config module reaps solvers left behind by a killed worker, see gunicorn_conf.py
 ENV GUNICORN_CMD_ARGS="--workers 4 --max-requests 32 --config python:optimizer.gunicorn_conf --access-logfile - --access-logformat '%(m)s %(U)s %(s)s %(D)s'"
