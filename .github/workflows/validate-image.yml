@@ -1,0 +1,47 @@
+name: Validate optimizer image
+
+on:
+  pull_request:
+    paths:
+      - evopt/**
+      - .github/workflows/validate-image.yml
+      - tests/smoke_optimizer.py
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: amd64
+            runner: ubuntu-latest
+          - arch: arm64
+            runner: ubuntu-24.04-arm
+    runs-on: ${{ matrix.runner }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - name: Read pinned optimizer commit
+        id: optimizer
+        run: |
+          commit=$(sed -n 's/^  EVOPT_COMMIT: "\([0-9a-f]\{40\}\)"$/\1/p' evopt/build.yaml)
+          test -n "$commit"
+          echo "commit=$commit" >> "$GITHUB_OUTPUT"
+      - uses: docker/setup-buildx-action@v3
+      - name: Build image without publishing
+        uses: docker/build-push-action@v6
+        with:
+          context: evopt
+          platforms: linux/${{ matrix.arch }}
+          load: true
+          push: false
+          tags: evopt:smoke
+          build-args: |
+            EVOPT_COMMIT=${{ steps.optimizer.outputs.commit }}
+      - name: Check API, HiGHS default and both solvers
+        run: docker run --rm -i --entrypoint /app/.venv/bin/python evopt:smoke < tests/smoke_optimizer.py

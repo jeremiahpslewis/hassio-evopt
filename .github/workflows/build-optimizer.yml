@@ -5,20 +5,32 @@ permissions:
   packages: write
 
 on:
+  push:
+    branches: [main]
+    paths:
+      - evopt/**
+      - .github/workflows/build-optimizer.yml
   schedule:
     - cron: '0 * * * *'  # stündlich, Minute 0 (UTC)
   workflow_dispatch:
+
+concurrency:
+  group: build-optimizer
+  cancel-in-progress: false
 
 env:
   IMAGE: ghcr.io/${{ github.repository_owner }}/evopt
 
 jobs:
   build-optimizer:
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
+        with:
+          ref: main
 
       - name: Log in to GitHub Container Registry
         uses: docker/login-action@v3
@@ -29,6 +41,8 @@ jobs:
 
       - name: Determine required build
         id: plan
+        env:
+          BUILD_EVENT: ${{ github.event_name }}
         run: |
           upstream=$(git ls-remote https://github.com/evcc-io/optimizer.git refs/heads/main | cut -f1)
           if [ -z "$upstream" ]; then
@@ -38,7 +52,7 @@ jobs:
           pinned=$(grep -oP 'EVOPT_COMMIT:\s*"\K[0-9a-f]+' evopt/build.yaml)
           current=$(grep -oP '^version:\s*"\K[^"]+' evopt/config.yaml)
           echo "upstream=$upstream pinned=$pinned current=$current"
-          if [ "$upstream" != "$pinned" ]; then
+          if [ "$upstream" != "$pinned" ] || [ "$BUILD_EVENT" = "push" ]; then
             today=$(date -u +%Y.%-m.%-d)
             if [ "$current" = "$today" ]; then
               new="$today.1"
@@ -47,7 +61,7 @@ jobs:
             else
               new="$today"
             fi
-            echo "New upstream commit, building version $new"
+            echo "New upstream commit or add-on change, building version $new"
             echo "build=true" >> $GITHUB_OUTPUT
             echo "bump=true" >> $GITHUB_OUTPUT
             echo "commit=$upstream" >> $GITHUB_OUTPUT
@@ -95,3 +109,5 @@ jobs:
         uses: stefanzweifel/git-auto-commit-action@v7
         with:
           commit_message: Update optimizer to ${{ steps.plan.outputs.commit }} (${{ steps.plan.outputs.version }})
+          branch: main
+          file_pattern: evopt/build.yaml evopt/config.yaml
