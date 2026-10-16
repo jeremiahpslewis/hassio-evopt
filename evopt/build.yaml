@@ -3,4 +3,4 @@ build_from:
   amd64: python:3.13-slim
   aarch64: python:3.13-slim
 args:
-  EVOPT_COMMIT: "ce03ab5584662edb316da1deb3cbe4f7145d91e4"
+  EVOPT_COMMIT: "df9cc5563f7aee52f46400af78a32595485f1892"
