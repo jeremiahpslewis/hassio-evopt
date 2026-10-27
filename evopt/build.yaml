@@ -1,6 +1,10 @@
 ---
 build_from:
-  amd64: python:3.13-slim
-  aarch64: python:3.13-slim
+  amd64: python:3.14-slim
+  aarch64: python:3.14-slim
 args:
-  EVOPT_COMMIT: "df9cc5563f7aee52f46400af78a32595485f1892"
+  # the optimizer source: evcc-io/optimizer main with per-battery efficiency
+  # (evcc-io/optimizer#99) rebased onto it
+  EVOPT_REPO: "https://github.com/jeremiahpslewis/optimizer.git"
+  EVOPT_BRANCH: "claude/bold-mendel-jikqu5"
+  EVOPT_COMMIT: "de58416a35201d7f5784375f67df64e70cc9624f"

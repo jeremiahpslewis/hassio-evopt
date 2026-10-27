@@ -1,4 +1,4 @@
-ARG BUILD_FROM=python:3.13-slim
+ARG BUILD_FROM=python:3.14-slim
 
 # Build stage: fetch the evcc optimizer from GitHub and install its dependencies
 FROM $BUILD_FROM AS builder
@@ -8,11 +8,16 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/* \
     && pip install --no-cache-dir uv
 
+# the runtime stage copies only the venv: fail here if the image python does not
+# satisfy the optimizer's, instead of linking the venv to a python uv downloaded
+ENV UV_PYTHON_DOWNLOADS=never
+
 # Fetch the pinned optimizer commit from GitHub
+ARG EVOPT_REPO=https://github.com/evcc-io/optimizer.git
 ARG EVOPT_COMMIT=main
 WORKDIR /app
 RUN git init -q . \
-    && git remote add origin https://github.com/evcc-io/optimizer.git \
+    && git remote add origin "$EVOPT_REPO" \
     && git fetch -q --depth 1 origin "$EVOPT_COMMIT" \
     && git checkout -q FETCH_HEAD
 
