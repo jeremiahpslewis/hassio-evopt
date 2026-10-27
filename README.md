@@ -105,7 +105,7 @@ Workflow-Ergebnis verlinkte PR manuell geöffnet werden. Der Workflow muss
 zuerst auf `main` zusammengeführt sein, bevor er dort manuell gestartet werden kann.
 
 Die Synchronisierung erhält die Anpassungen dieses Forks: GHCR-Images,
-Optimizer-Pin und `OPTIMIZER_SOLVER=highs`. Bei Konflikten bleibt der lokale
+Optimizer-Quelle und -Pin sowie `OPTIMIZER_SOLVER=highs`. Bei Konflikten bleibt der lokale
 Keepalive-Zeitstempel erhalten; der durch den GHCR-Build ersetzte
 Docker-Hub-Updater bleibt gelöscht. Andere Konflikte stoppen den Lauf, ohne
 den PR-Branch zu überschreiben. Der Workflow verwendet keine Force-Pushes.
@@ -113,10 +113,18 @@ Ein geschlossener, nicht zusammengeführter Sync-PR muss vor einem erneuten
 Lauf wieder geöffnet oder sein Branch bewusst umbenannt werden.
 
 Dies synchronisiert nur den Add-on-Upstream `thecem/hassio-evopt`.
-Die vorhandene Aktualisierung von `evcc-io/optimizer` bleibt davon unabhängig.
-**Build optimizer image** prüft weiterhin stündlich sowie bei manuellem Start
-den aktuellen `main`-Commit von `evcc-io/optimizer`, baut beide Architekturen und
-aktualisiert anschließend den Pin und die Add-on-Version. Änderungen am Add-on
+Die Aktualisierung des Optimizers bleibt davon unabhängig.
+**Build optimizer image** prüft stündlich sowie bei manuellem Start den
+aktuellen Commit der in `evopt/build.yaml` eingetragenen Optimizer-Quelle
+(`EVOPT_REPO`, `EVOPT_BRANCH`), baut beide Architekturen und aktualisiert
+anschließend den Pin und die Add-on-Version. Derzeit ist das der Branch
+`claude/bold-mendel-jikqu5` von `jeremiahpslewis/optimizer`: `main` von
+`evcc-io/optimizer` mit dem Wirkungsgrad je Batterie (evcc-io/optimizer#99)
+darauf. Ist der PR upstream übernommen, genügt es, dort wieder
+`https://github.com/evcc-io/optimizer.git` und `main` einzutragen. Das Image
+baut auf `python:3.14-slim`, der Python-Version des Optimizers; passt sie nicht
+mehr, bricht `uv sync` im Build ab, statt ein Image ohne Python zu bauen.
+Änderungen am Add-on
 auf `main` lösen ebenfalls einen Build mit einer neuen Version aus, auch wenn
 der Optimizer-Commit unverändert ist. **Validate optimizer
 image** baut den im PR gepinnten Stand für amd64 und arm64 und prüft API,

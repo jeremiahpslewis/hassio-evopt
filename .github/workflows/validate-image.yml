@@ -30,8 +30,10 @@ jobs:
         id: optimizer
         run: |
           commit=$(sed -n 's/^  EVOPT_COMMIT: "\([0-9a-f]\{40\}\)"$/\1/p' evopt/build.yaml)
-          test -n "$commit"
+          repo=$(sed -n 's/^  EVOPT_REPO: "\(.*\)"$/\1/p' evopt/build.yaml)
+          test -n "$commit" && test -n "$repo"
           echo "commit=$commit" >> "$GITHUB_OUTPUT"
+          echo "repo=$repo" >> "$GITHUB_OUTPUT"
       - uses: docker/setup-buildx-action@v3
       - name: Build image without publishing
         uses: docker/build-push-action@v6
@@ -42,6 +44,7 @@ jobs:
           push: false
           tags: evopt:smoke
           build-args: |
+            EVOPT_REPO=${{ steps.optimizer.outputs.repo }}
             EVOPT_COMMIT=${{ steps.optimizer.outputs.commit }}
       - name: Check API, HiGHS default and both solvers
         run: docker run --rm -i --entrypoint /app/.venv/bin/python evopt:smoke < tests/smoke_optimizer.py
