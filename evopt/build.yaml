@@ -7,4 +7,4 @@ args:
   # (evcc-io/optimizer#99) rebased onto it
   EVOPT_REPO: "https://github.com/jeremiahpslewis/optimizer.git"
   EVOPT_BRANCH: "claude/bold-mendel-jikqu5"
-  EVOPT_COMMIT: "de58416a35201d7f5784375f67df64e70cc9624f"
+  EVOPT_COMMIT: "0ea1c7d9bd747a43bfb407492c9a779d1f782440"
