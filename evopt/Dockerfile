@@ -24,11 +24,11 @@ RUN git init -q . \
 RUN uv sync --locked --no-editable --no-group dev
 
 # PuLP 4 resolves CBC from PATH instead of bundling it. Use upstream's
-# checksum-verified CBC 2.10.10 build on amd64 and Debian's CBC on arm64.
+# checksum-verified CBC 2.10.13 build on amd64 and Debian's CBC on arm64.
 RUN mkdir -p /out/bin \
     && if [ "$(dpkg --print-architecture)" = "amd64" ]; then \
-        curl -fsSL -o /tmp/cbc.tar.gz "https://github.com/coin-or/Cbc/releases/download/releases%2F2.10.10/Cbc-releases.2.10.10-x86_64-ubuntu22-gcc1130-static.tar.gz" \
-        && echo "f551e7b843e25becee466a447118f6f44f219c4e46cfb4670829ecd3cf47e7d8  /tmp/cbc.tar.gz" | sha256sum -c - \
+        curl -fsSL -o /tmp/cbc.tar.gz "https://github.com/coin-or/Cbc/releases/download/releases%2F2.10.13/Cbc-releases.2.10.13-x86_64-ubuntu22-gcc1140-static.tar.gz" \
+        && echo "86d52bb5634203826f213a09cba83394623a1c44eecc75caed2a553a9ac642fa  /tmp/cbc.tar.gz" | sha256sum -c - \
         && tar -xzf /tmp/cbc.tar.gz -C /out ./bin/cbc; \
     fi
 
