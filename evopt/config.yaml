@@ -1,6 +1,6 @@
 ---
 name: evopt
-version: "2026.11.15"
+version: "2026.11.20"
 slug: evopt
 description: Optimierer für Ladevorgänge (evopt) als Home Assistant Add-on
 url: https://github.com/evcc-io/optimizer
